@@ -61,6 +61,22 @@ export default class PreparedModel {
 
     this._operations.forEach(operation => {
       this._executeOperation(operation);
+
+      // print output of each layer
+      console.log('===================');
+      let operand = this._operands[operation.outputs[0]];
+      let shape = [operand.runtimeshape.Dims(0),
+                   operand.runtimeshape.Dims(1),
+                   operand.runtimeshape.Dims(2),
+                   operand.runtimeshape.Dims(3)];
+      let shapeWithoutZeros = [];
+      shape.forEach(x => {
+        if (x != 0) shapeWithoutZeros.push(x);
+      });
+      let buffer = new Float32Array(utils.product(shapeWithoutZeros));
+      this._getTensorData(operand.type, operand.value, buffer);
+      console.log(shape);
+      console.log(buffer);
     });
 
     outputs.forEach(output => {

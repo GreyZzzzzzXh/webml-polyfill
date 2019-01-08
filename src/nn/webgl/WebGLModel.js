@@ -66,6 +66,11 @@ export default class WebGLModel {
       tf.tidy(() => {
         this._executeOperation(operation);
       });
+      
+      // print output of each layer
+      console.log('===================');
+      console.log(this._operands[operation.outputs[0]].shape);
+      console.log(this._operands[operation.outputs[0]].dataSync());
     });
 
     outputs.forEach(output => {
