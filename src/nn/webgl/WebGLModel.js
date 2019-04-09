@@ -24,6 +24,16 @@ export default class WebGLModel {
     this._preference = PreferenceCode.FAST_SINGLE_ANSWER;
     this._prepared = false;
     this._subgraphs = [];
+    this._useWebGL1 = true;
+
+    if (this._useWebGL1 && tf.ENV.get('WEBGL_VERSION') !== 1) {
+      tf.ENV.removeBackend('webgl');
+      tf.ENV.set('WEBGL_VERSION', 1);
+      tf.ENV.registerBackend(
+          'webgl', () => new tf.webgl.MathBackendWebGL(), 2 /* priority */);
+      tf.setBackend('webgl');
+      console.log(tf.ENV.backend.gpgpu.gl); // WebGL context
+    }
 
     if (tf.ENV.backend.floatPrecision() === 16) {
       console.warn(
