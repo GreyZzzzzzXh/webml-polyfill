@@ -279,8 +279,16 @@ export default class WebGLModel {
   }
 
   async _executeGlSubgraph(subgraph) {
-    for (const operation of subgraph.operations) {
-      tf.tidy(() => this._executeGlOperation(operation));
+    // for (const operation of subgraph.operations) {
+    //   tf.tidy(() => this._executeGlOperation(operation));
+    // }
+
+    for (const i in subgraph.operations) {
+      const operation = subgraph.operations[i];
+      const time = await tf.time(() => {
+        this._executeGlOperation(operation);
+      });
+      console.log(`${i}, op: ${operation.type}, kernelMs: ${time.kernelMs}, wallTimeMs: ${time.wallMs}`);
     }
 
     // fence
